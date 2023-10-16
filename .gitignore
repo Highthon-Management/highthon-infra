@@ -10,3 +10,4 @@ env.tf
 terraform.tfstate
 terraform.tfstate.*
 .terraform
+dev.tfvars
