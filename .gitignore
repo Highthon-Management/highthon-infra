@@ -9,3 +9,4 @@ env.tf
 .terraform.*
 terraform.tfstate
 terraform.tfstate.*
+.terraform
