@@ -37,7 +37,7 @@ resource "aws_s3_bucket_policy" "s3_policy" {
   depends_on = [aws_s3_bucket.s3, aws_s3_bucket_public_access_block.access_block]
 }
 
-resource "aws_s3_bucket_cors_configuration" "bucketou_cors" {
+resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
 
   bucket = aws_s3_bucket.s3.id
 
@@ -46,5 +46,21 @@ resource "aws_s3_bucket_cors_configuration" "bucketou_cors" {
     allowed_methods = ["PUT","GET"]
     allowed_origins = ["*"]//나중에 Domain 추가
     expose_headers = ["ETag"]
+  }
+}
+
+data "aws_iam_policy_document" "policy" {
+  version = "2012-10-17"
+  statement {
+    actions = [
+      "s3:Get*",
+      "s3:Put*"
+    ]
+    effect = "Allow"
+    resources = ["${aws_s3_bucket.s3.arn}//highthon/*"]
+    principals {
+      identifiers = ["*"]
+      type        = "AWS"
+    }
   }
 }
