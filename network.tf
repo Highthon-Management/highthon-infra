@@ -1,13 +1,14 @@
 resource "aws_vpc" "vpc" {
   assign_generated_ipv6_cidr_block     = false
-  cidr_block                           = "10.0.0.0/26"
+  cidr_block                           = "10.0.0.0/24"
   enable_dns_hostnames                 = true
   enable_dns_support                   = true
   enable_network_address_usage_metrics = false
   instance_tenancy                     = "default"
 
   tags = {
-    Name = "highthon-VPC"
+    Name = "${var.app_name}-VPC"
+    name = "2-2Admin"
   }
 }
 
@@ -23,6 +24,7 @@ resource "aws_subnet" "public" {
 
   tags = {
     Name = "public-subnet-${data.aws_availability_zones.available.names[count.index]}"
+    name = "2-2Admin"
   }
 }
 
@@ -35,13 +37,17 @@ resource "aws_subnet" "private" {
 
   tags = {
     Name = "private-subnet-${data.aws_availability_zones.available.names[count.index]}"
+    name = "2-2Admin"
   }
 }
 
 # 인터넷 게이트웨이 생성
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
-  tags = { Name = "highthon-igw"}
+  tags = {
+    Name = "${var.app_name}-igw"
+    name = "2-2Admin"
+  }
 }
 
 resource "aws_route" "internet_access" {
@@ -62,7 +68,8 @@ resource "aws_nat_gateway" "nat-gw" {
   connectivity_type = "private"
 
   tags = {
-    Name = "highthon-nat-gw"
+    Name = "${var.app_name}-nat-gw"
+    name = "2-2Admin"
   }
 }
 
@@ -73,19 +80,19 @@ resource "aws_route_table" "public-rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-  tags = { Name = "public-rt" }
-  tags_all = { Name = "public-rt" }
+  tags = {
+    Name = "public-rt"
+    name = "2-2Admin"
+  }
 }
 
 # private routing
 resource "aws_route_table" "private-rt" {
-  route {
-    cidr_block      = "0.0.0.0/0"
-    nat_gateway_id  = aws_nat_gateway.nat-gw.id
-  }
   vpc_id = aws_vpc.vpc.id
-  tags = { Name = "private-rt" }
-  tags_all = { Name = "private-rt" }
+  tags = {
+    Name = "private-rt"
+    name = "2-2Admin"
+  }
 }
 
 resource "aws_route_table_association" "to-public" {
