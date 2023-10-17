@@ -4,6 +4,9 @@ resource "aws_acm_certificate" "cert" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = {
+    name = "2-2Admin"
+  }
 }
 
 resource "aws_acm_certificate_validation" "cert" {
