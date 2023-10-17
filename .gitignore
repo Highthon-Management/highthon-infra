@@ -11,6 +11,7 @@ terraform.tfstate
 terraform.tfstate.*
 .terraform
 dev.tfvars
+highthon-architecture.iml
 
 ### intelliJ ###
 .idea
