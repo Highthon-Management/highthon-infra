@@ -1,14 +1,18 @@
-resource "aws_ecr_repository" "repo" {
-  name = "highthon"
-  image_tag_mutability = "MUTABLE"
+resource "aws_ecr_repository" "default" {
+  name = var.app_name
+  image_tag_mutability="MUTABLE"
+  force_delete = true
 
-  image_scanning_configuration {
-    scan_on_push = false
+  image_scanning_configuration{
+    scan_on_push=true
+  }
+  tags = {
+    Name = var.app_name
   }
 }
 
 resource "aws_ecr_lifecycle_policy" "repo-policy" {
-  repository = aws_ecr_repository.repo.name
+  repository = aws_ecr_repository.default.name
 
   policy = <<EOF
   {
