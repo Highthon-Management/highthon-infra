@@ -1,27 +1,24 @@
-resource "aws_s3_bucket" "s3" {
-  bucket = "highthon-submit"
+resource "aws_s3_bucket" "default" {
+  bucket = "${var.app_name}-submit"
   force_destroy = true
   tags = {
-    Name = "highthon-submit"
-  }
-
-  tags_all = {
-    Name = "highthon-submit"
+    Name = "${var.app_name}-submit"
+    name = "2-2Admin"
   }
 }
 
-resource "aws_s3_bucket_versioning" "versioning" {
+resource "aws_s3_bucket_versioning" "default" {
 
-  bucket = aws_s3_bucket.s3.id
+  bucket = aws_s3_bucket.default.id
 
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "access_block" {
+resource "aws_s3_bucket_public_access_block" "default" {
 
-  bucket = aws_s3_bucket.s3.id
+  bucket = aws_s3_bucket.default.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -31,15 +28,15 @@ resource "aws_s3_bucket_public_access_block" "access_block" {
 
 resource "aws_s3_bucket_policy" "s3_policy" {
 
-  bucket = aws_s3_bucket.s3.id
+  bucket = aws_s3_bucket.default.id
 
-  policy = data.aws_iam_policy_document.policy.json
-  depends_on = [aws_s3_bucket.s3, aws_s3_bucket_public_access_block.access_block]
+  policy = data.aws_iam_policy_document.default.json
+  depends_on = [aws_s3_bucket.default, aws_s3_bucket_public_access_block.default]
 }
 
-resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
+resource "aws_s3_bucket_cors_configuration" "default" {
 
-  bucket = aws_s3_bucket.s3.id
+  bucket = aws_s3_bucket.default.id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -49,7 +46,7 @@ resource "aws_s3_bucket_cors_configuration" "bucket_cors" {
   }
 }
 
-data "aws_iam_policy_document" "policy" {
+data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
     actions = [
@@ -57,7 +54,7 @@ data "aws_iam_policy_document" "policy" {
       "s3:Put*"
     ]
     effect = "Allow"
-    resources = ["${aws_s3_bucket.s3.arn}//highthon/*"]
+    resources = ["${aws_s3_bucket.default.arn}//highthon/*"]
     principals {
       identifiers = ["*"]
       type        = "AWS"

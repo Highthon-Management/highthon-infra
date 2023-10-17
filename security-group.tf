@@ -1,4 +1,4 @@
-resource "aws_security_group" "alb" {
+resource "aws_security_group" "default" {
   vpc_id = aws_vpc.vpc.id
   name = "alb-sg"
 
@@ -25,6 +25,10 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+  tags = {
+    name = "2-2Admin"
+  }
 }
 
 resource "aws_security_group" "ecs_tasks" {
@@ -43,5 +47,9 @@ resource "aws_security_group" "ecs_tasks" {
     protocol      = "-1"
     to_port       = 0
     cidr_blocks   = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    name = "2-2Admin"
   }
 }
